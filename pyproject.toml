@@ -41,6 +41,8 @@ dependencies = [
     "pypdf>=5.7.0",
     "cdp-use>=1.4.0",
     "markdown-pdf==1.5",
+    "fastapi>=0.115.8",
+    "uvicorn>=0.34.0",
 ]
 # google-api-core: only used for Google LLM APIs
 # pyperclip: only used for examples that use copy/paste
@@ -86,6 +88,9 @@ all = [
 # [tool.uv.sources]
 # bubus = { path = "../bubus", editable = true }
 
+
+[project.scripts]
+browser-use = "browser_use.cli:main"
 
 [project.urls]
 Repository = "https://github.com/browser-use/browser-use"
@@ -183,9 +188,7 @@ dev-dependencies = [
     "pytest>=8.3.5",
     "pytest-asyncio>=1.0.0",
     "pytest-httpserver>=1.0.8",
-    "fastapi>=0.115.8",
     "inngest>=0.4.19",
-    "uvicorn>=0.34.0",
     "ipdb>=0.13.13",
     "pre-commit>=4.2.0",
     "codespell>=2.4.1",

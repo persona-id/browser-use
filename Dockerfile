@@ -73,7 +73,7 @@ ENV CODE_DIR=/app \
     PATH="/app/.venv/bin:$PATH"
 
 # Build shell config
-SHELL ["/bin/bash", "-o", "pipefail", "-o", "errexit", "-o", "errtrace", "-o", "nounset", "-c"] 
+SHELL ["/bin/bash", "-o", "pipefail", "-o", "errexit", "-o", "errtrace", "-o", "nounset", "-c"]
 
 # Force apt to leave downloaded binaries in /var/cache/apt (massively speeds up Docker builds)
 RUN echo 'Binary::apt::APT::Keep-Downloaded-Packages "1";' > /etc/apt/apt.conf.d/99keep-cache \
@@ -202,12 +202,10 @@ RUN mkdir -p "$DATA_DIR/profiles/default" \
     ) | tee -a /VERSION.txt
 
 
-USER "$BROWSERUSE_USER"
-VOLUME "$DATA_DIR"
+# USER "$BROWSERUSE_USER"
+# VOLUME "$DATA_DIR"
+EXPOSE 8080
 EXPOSE 9242
 EXPOSE 9222
 
-# HEALTHCHECK --interval=30s --timeout=20s --retries=15 \
-#     CMD curl --silent 'http://localhost:8000/health/' | grep -q 'OK'
-
-ENTRYPOINT ["browser-use"]
+ENTRYPOINT ["python", "/app/api_server.py"]
