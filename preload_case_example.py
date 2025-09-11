@@ -7,13 +7,14 @@ import asyncio
 import httpx
 
 
-async def preload_persona_case(case_token: str, access_token: str, api_base_url: str = "http://localhost:8080"):
+async def preload_persona_case(case_token: str, access_token: str, refresh_token: str, api_base_url: str = "http://localhost:8080"):
 	"""
 	Preload a Persona case by calling the /preload_case endpoint
 	
 	Args:
 		case_token: The Persona case token (from the URL)
-		access_token: Access token for Persona API authentication  
+		access_token: Access token for Persona API authentication
+		refresh_token: Refresh token for Persona API authentication
 		api_base_url: Base URL of the browser-use API server
 		
 	Returns:
@@ -22,7 +23,7 @@ async def preload_persona_case(case_token: str, access_token: str, api_base_url:
 	async with httpx.AsyncClient(timeout=30.0) as client:
 		response = await client.post(
 			f"{api_base_url}/preload_case",
-			json={"case_token": case_token, "access_token": access_token}
+			json={"case_token": case_token, "access_token": access_token, "refresh_token": refresh_token}
 		)
 		
 		return response.json()
@@ -35,11 +36,12 @@ async def main():
 	# https://app.withpersona.com/dashboard/cases/cas_abc123def456
 	case_token = "cas_abc123def456"
 	
-	# Your Persona access token
+	# Your Persona access token and refresh token
 	access_token = "your_persona_access_token_here"
+	refresh_token = "your_persona_refresh_token_here"
 	
 	try:
-		result = await preload_persona_case(case_token, access_token)
+		result = await preload_persona_case(case_token, access_token, refresh_token)
 		
 		if result["success"]:
 			print(f"✅ Successfully preloaded case {case_token}")
@@ -59,5 +61,5 @@ if __name__ == "__main__":
 print("Example code for /preload_case endpoint created.")
 print("To use this endpoint:")
 print("1. Start the API server: python api_server.py")
-print("2. Send POST request to /preload_case with case_token and access_token parameters")
+print("2. Send POST request to /preload_case with case_token, access_token, and refresh_token parameters")
 print("3. The endpoint will visit the Persona URL with authentication and return a screenshot")

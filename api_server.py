@@ -65,7 +65,7 @@ class PreloadCaseRequest(BaseModel):
 	"""Request model for preloading a Persona case"""
 	case_token: str
 	access_token: str
-
+	refresh_token: str
 
 class PreloadCaseResponse(BaseModel):
 	"""Response model for preloaded case"""
@@ -167,6 +167,13 @@ async def preload_case(request: PreloadCaseRequest):
 			asyncio.create_task(handle_request_paused(event, session_id))
 		
 		cdp_session.cdp_client.register.Fetch.requestPaused(on_request_paused)
+		
+		await cdp_session.cdp_client.send.Page.addScriptToEvaluateOnNewDocument(
+			params={
+				'source': 'localStorage.setItem("PERSONA-DASHBOARD-REFRESH", "eeb0afcd90931dc142ee92cd320dbd3c");'
+			},
+			session_id=cdp_session.session_id
+		)
 		
 		# Navigate and wait for load
 		await cdp_session.cdp_client.send.Page.navigate(

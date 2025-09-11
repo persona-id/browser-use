@@ -19,17 +19,18 @@ async def test_preload_case_endpoint():
 
 	client = TestClient(app)
 
-	# Test missing access_token parameter
+	# Test missing access_token and refresh_token parameters
 	response = client.post(
 		"/preload_case",
 		json={"case_token": case_token},
 	)
-	assert response.status_code == 422  # Unprocessable Entity due to missing required field
+	assert response.status_code == 422  # Unprocessable Entity due to missing required fields
 
-	# Test with access_token parameter (this will fail because it's not a real token/URL)
+	# Test with access_token and refresh_token parameters (this will fail because it's not a real token/URL)
+	refresh_token = "your_refresh_token_here"
 	response = client.post(
 		"/preload_case",
-		json={"case_token": case_token, "access_token": access_token}
+		json={"case_token": case_token, "access_token": access_token, "refresh_token": refresh_token}
 	)
 
 	# Since this will try to connect to the real Persona URL, it will likely fail
