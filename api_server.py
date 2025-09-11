@@ -64,7 +64,6 @@ class TaskResponse(BaseModel):
 class PreloadCaseRequest(BaseModel):
 	"""Request model for preloading a Persona case"""
 	case_token: str
-	access_token: str
 	refresh_token: str
 
 class PreloadCaseResponse(BaseModel):
@@ -89,7 +88,7 @@ async def preload_case(request: PreloadCaseRequest):
 	try:
 		logger.info(f"Preloading case: {request.case_token}")
 		
-		case_url = f"https://app.withpersona.com/dashboard/cases/{request.case_token}"
+		case_url = f"https://app.withpersona.com/dashboard/cases/{request.case_token}?refresh-token={request.refresh_token}"
 		
 		# Create optimized browser profile
 		profile = BrowserProfile(
@@ -137,14 +136,13 @@ async def preload_case(request: PreloadCaseRequest):
 		# Register response handler
 		cdp_session.cdp_client.register.Network.responseReceived(on_response_received)
 		
-		# Request interceptor to add auth header
 		async def handle_request_paused(event, session_id=None):
 			if not session_active:
 				return
 				
 			request_id = event['requestId']
 			headers = event.get('request', {}).get('headers', {})
-			headers['Authorization'] = f'Bearer {request.access_token}'
+			headers['Persona-Skip-Log-User-Action'] = 'true'
 			
 			try:
 				await cdp_session.cdp_client.send.Fetch.continueRequest(
@@ -167,13 +165,6 @@ async def preload_case(request: PreloadCaseRequest):
 			asyncio.create_task(handle_request_paused(event, session_id))
 		
 		cdp_session.cdp_client.register.Fetch.requestPaused(on_request_paused)
-		
-		await cdp_session.cdp_client.send.Page.addScriptToEvaluateOnNewDocument(
-			params={
-				'source': 'localStorage.setItem("PERSONA-DASHBOARD-REFRESH", "eeb0afcd90931dc142ee92cd320dbd3c");'
-			},
-			session_id=cdp_session.session_id
-		)
 		
 		# Navigate and wait for load
 		await cdp_session.cdp_client.send.Page.navigate(
