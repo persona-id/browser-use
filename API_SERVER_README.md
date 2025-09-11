@@ -65,7 +65,8 @@ Visit a Persona dashboard case URL with authentication and return a screenshot o
 ```json
 {
   "case_token": "cas_abc123def456",
-  "access_token": "your_persona_access_token"
+  "access_token": "your_persona_access_token",
+  "refresh_token": "your_persona_refresh_token"
 }
 ```
 
@@ -216,7 +217,8 @@ async def preload_persona_case():
             "http://localhost:8080/preload_case",
             json={
                 "case_token": "cas_abc123def456",
-                "access_token": "your_persona_token"
+                "access_token": "your_persona_token",
+                "refresh_token": "your_persona_refresh_token"
             }
         )
         return response.json()  # Contains base64 screenshot data
@@ -247,7 +249,8 @@ curl -X POST http://localhost:8080/preload_case \
   -H "Content-Type: application/json" \
   -d '{
     "case_token": "case_VAKx8NXRKg82SuFzKETk9qeC8u6M",
-    "access_token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VzXzZZUXFoRG1KNjNhNnM0M0hNZEJFUURORG9mbXciLCJhdWQiOiJwZXJzb25hLXNlc3Npb24iLCJpc3MiOiJ3aXRocGVyc29uYS5jb20iLCJpYXQiOjE3NTY3NzYzNDAsIm5iZiI6MTc1Njc3NjM0MCwiZXhwIjoxNzU2ODE5NTQwLCJqdGkiOiI2MjRjODJkMC1kMzY0LTRmNWQtOTQ4NS1jNWRiNWI5ODRhYjIiLCJ1c2VyX2lkIjoidXNlcl9zWFM3UkVvUm9QQzZQR3JNeWtHeUFiN2kiLCJvcmdhbml6YXRpb25faWQiOiJvcmdfdXkyM0N2eE50ZFZ6OUVEaEEydkFNbmRmIn0.sNrawYGsNrC_uJbRBmuOst4-c2m4WTGkxmgk8NzUDlI"
+    "access_token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VzXzZZUXFoRG1KNjNhNnM0M0hNZEJFUURORG9mbXciLCJhdWQiOiJwZXJzb25hLXNlc3Npb24iLCJpc3MiOiJ3aXRocGVyc29uYS5jb20iLCJpYXQiOjE3NTY3NzYzNDAsIm5iZiI6MTc1Njc3NjM0MCwiZXhwIjoxNzU2ODE5NTQwLCJqdGkiOiI2MjRjODJkMC1kMzY0LTRmNWQtOTQ4NS1jNWRiNWI5ODRhYjIiLCJ1c2VyX2lkIjoidXNlcl9zWFM3UkVvUm9QQzZQR3JNeWtHeUFiN2kiLCJvcmdhbml6YXRpb25faWQiOiJvcmdfdXkyM0N2eE50ZFZ6OUVEaEEydkFNbmRmIn0.sNrawYGsNrC_uJbRBmuOst4-c2m4WTGkxmgk8NzUDlI",
+    "refresh_token": "your_persona_refresh_token_here"
   }'
 ```
 
@@ -271,13 +274,14 @@ async function runBrowserTask() {
   }
 }
 
-async function preloadPersonaCase(caseToken, accessToken) {
+async function preloadPersonaCase(caseToken, accessToken, refreshToken) {
   try {
     const response = await axios.post(
       'http://localhost:8080/preload_case',
       {
         case_token: caseToken,
-        access_token: accessToken
+        access_token: accessToken,
+        refresh_token: refreshToken
       }
     );
 
